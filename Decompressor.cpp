@@ -6,6 +6,9 @@
 #include "Dictionary.hpp"
 
 #define CODE_WIDTH 12
+#define SMALLEST_BYTE 0x00FF
+#define UPPER_NIBBLE 0x00F0
+#define LOWER_NIBBLE 0x000F
 
 using namespace std;
 
@@ -63,23 +66,27 @@ int* convert_to_codes(char* input, int length)
 
   for (int i=0; i<length; i+=3)
   {
-    int c1 = (int) input[i];
-    char c2 = input[i+1];
+    uint16_t c1 = input[i];
+    uint16_t c2 = input[i+1];
+
+    uint16_t mask_c1 = c1 & SMALLEST_BYTE;
 
     // If there is only one code left, it will be a padded 16-bit number
     if (num_codes - cur_pos == 1)
     {
-      codes[cur_pos] = (c1 << 8) | (int) c2;
+      uint16_t mask_c2 = c2 & SMALLEST_BYTE;
+      codes[cur_pos] = (mask_c1 << 8) | mask_c2;
       return codes;
     }
 
-    int c3 = (int) input[i+2];
+    uint16_t c3 = input[i+2];
 
-    int lower = c2 & 0x0F;
-    int upper = (c2 << 4) & 0x00000F00;
+    uint16_t mask_c3 = c3 & SMALLEST_BYTE;
+    uint16_t lower = c2 & LOWER_NIBBLE;
+    uint16_t upper = (c2 & UPPER_NIBBLE) >> 4;
 
-    codes[cur_pos] = (c1 << 4) | lower;
-    codes[cur_pos+1] = c3 | upper;
+    codes[cur_pos] = (mask_c1 << 4) | upper;
+    codes[cur_pos+1] = c3 | (lower << 8);
     cur_pos += 2;
   }
 
