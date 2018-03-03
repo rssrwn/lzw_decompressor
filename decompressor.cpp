@@ -2,7 +2,8 @@
 #include <fstream>
 #include <string>
 
-#include "decompressor.hpp"
+#include "Decompressor.hpp"
+#include "Dictionary.hpp"
 
 #define CODE_WIDTH 12
 
@@ -35,8 +36,10 @@ int main(int argc, char **argv)
   int* codes = convert_to_codes(buffer, length);
   delete[] buffer;
 
-  // testing
   int num_codes = (length / 3) * 2;
+  decompress(codes, num_codes);
+
+  // testing
   if (length % 3 != 0)
     num_codes++;
   for (int i=0; i<num_codes; i++) {
@@ -85,6 +88,10 @@ int* convert_to_codes(char* input, int length)
 
 string& decompress(int* codes, int num_codes)
 {
+  Dictionary* dict = new Dictionary();
+
+
+
   string* str = new string;
   //string& str2 = *str;
   return *str;
