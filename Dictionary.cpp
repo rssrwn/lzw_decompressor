@@ -7,13 +7,12 @@ using namespace std;
 
 Dictionary::Dictionary()
 {
-  dict = new string*[MAX_DICT_SIZE];
+  dict = new string[MAX_DICT_SIZE];
   next_index = 0;
 }
 
 Dictionary::~Dictionary()
 {
-  free_strings();
   delete[] dict;
 }
 
@@ -31,7 +30,7 @@ string* Dictionary::get(int index)
   if (index >= next_index)
     return nullptr;
 
-  return dict[index];
+  return &dict[index];
 }
 
 void Dictionary::put(string str)
@@ -39,17 +38,10 @@ void Dictionary::put(string str)
   // If the dictionary is bigger than 2^12, reset it
   if (next_index >= MAX_DICT_SIZE)
   {
-    free_strings();
+    next_index = 0;
     init_ascii_chars();
   }
 
-  string* copy = new string(str);
-  dict[next_index] = copy;
+  dict[next_index] = str;
   next_index++;
-}
-
-void Dictionary::free_strings(void)
-{
-  for (int i=0; i<next_index; i++)
-    delete dict[i];
 }

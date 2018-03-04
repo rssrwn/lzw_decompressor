@@ -9,10 +9,8 @@ using namespace std;
 class Dictionary {
 
 private:
-  string** dict;
+  string* dict;
   int next_index;
-
-  void free_strings(void);
 
 public:
   Dictionary();

@@ -40,9 +40,10 @@ int main(int argc, char **argv)
   delete[] buffer;
 
   int num_codes = (length / 3) * 2;
-  decompress(codes, num_codes);
+  string str = decompress(codes, num_codes);
+  cout << str << endl;
 
-  delete[] codes;
+  //delete[] codes;
   return 0;
 }
 
@@ -77,7 +78,7 @@ uint16_t* convert_to_codes(char* input, int length)
     uint16_t upper = (c2 & UPPER_NIBBLE) >> 4;
 
     codes[cur_pos] = (mask_c1 << 4) | upper;
-    codes[cur_pos+1] = c3 | (lower << 8);
+    codes[cur_pos+1] = mask_c3 | (lower << 8);
     cur_pos += 2;
   }
 
@@ -86,28 +87,27 @@ uint16_t* convert_to_codes(char* input, int length)
 
 string& decompress(uint16_t* codes, int num_codes)
 {
-  Dictionary dict;
-  dict.init_ascii_chars();
+  string result;
+  Dictionary* dict = new Dictionary();
+  dict->init_ascii_chars();
 
   for (int i=0; i<num_codes; i++)
   {
-    string curr_str = *dict.get(codes[i]);
-    string next_str = *dict.get(codes[i+1]);
-    cout << curr_str;
+    string curr_str = *dict->get(codes[i]);
+    string* next_str_ptr = dict->get(codes[i+1]);
+
+    result += curr_str;
     string new_str(curr_str);
-    new_str.push_back(next_str.at(0));
-    dict.put(new_str);
+
+    if (next_str_ptr == nullptr)
+      new_str.push_back(curr_str.at(0));
+
+    else
+      new_str.push_back(next_str_ptr->at(0));
+
+    dict->put(new_str);
   }
+  delete dict;
 
-  /*for (int i=0; i<num_codes; i++)
-  {
-    //cout << "here" << endl;
-    cout << *dict.get(codes[i]) << endl;
-  }*/
-  cout << endl;
-
-
-  string* str = new string;
-  //string& str2 = *str;
-  return *str;
+  return result;
 }
