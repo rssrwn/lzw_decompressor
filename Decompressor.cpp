@@ -40,10 +40,11 @@ int main(int argc, char **argv)
   delete[] buffer;
 
   int num_codes = (length / 3) * 2;
-  string str = decompress(codes, num_codes);
-  cout << str << endl;
+  string* str = decompress(codes, num_codes);
+  cout << *str << endl;
 
-  //delete[] codes;
+  delete str;
+  delete[] codes;
   return 0;
 }
 
@@ -85,9 +86,9 @@ uint16_t* convert_to_codes(char* input, int length)
   return codes;
 }
 
-string& decompress(uint16_t* codes, int num_codes)
+string* decompress(uint16_t* codes, int num_codes)
 {
-  string result;
+  string* result = new string();
   Dictionary* dict = new Dictionary();
   dict->init_ascii_chars();
 
@@ -96,12 +97,15 @@ string& decompress(uint16_t* codes, int num_codes)
     string curr_str = *dict->get(codes[i]);
     string* next_str_ptr = dict->get(codes[i+1]);
 
-    result += curr_str;
+    *result += curr_str;
     string new_str(curr_str);
 
+    // If the next_str has not yet been allocated, its first character
+    // will be the first character of curr_str
     if (next_str_ptr == nullptr)
       new_str.push_back(curr_str.at(0));
 
+    // Otherwise, append the first character of the next string
     else
       new_str.push_back(next_str_ptr->at(0));
 

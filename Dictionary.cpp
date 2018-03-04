@@ -27,6 +27,7 @@ void Dictionary::init_ascii_chars(void)
 
 string* Dictionary::get(int index)
 {
+  // If the index hasn't been allocated, return null
   if (index >= next_index)
     return nullptr;
 
