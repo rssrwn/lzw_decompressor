@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// A int -> string mapping used for decompressing an lzw-compressed file
 class Dictionary {
 
 private:
@@ -13,10 +14,8 @@ private:
   int next_index;
 
 public:
-  // Constructor
-  Dictionary();
 
-  // Destructor
+  Dictionary();
   ~Dictionary();
 
   // Add all 8-bits (ascii) characters to the dictionary
