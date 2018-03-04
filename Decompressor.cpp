@@ -9,6 +9,8 @@
 #define SMALLEST_BYTE 0x00FF
 #define UPPER_NIBBLE 0x00F0
 #define LOWER_NIBBLE 0x000F
+#define BYTE 8
+#define NIBBLE 4
 
 using namespace std;
 
@@ -40,6 +42,9 @@ int main(int argc, char **argv)
   delete[] buffer;
 
   int num_codes = (length / 3) * 2;
+  if (length % 3 != 0)
+    num_codes++;
+
   string* str = decompress(codes, num_codes);
   cout << *str << endl;
 
@@ -68,7 +73,7 @@ uint16_t* convert_to_codes(char* input, int length)
     if (num_codes - cur_pos == 1)
     {
       uint16_t mask_c2 = c2 & SMALLEST_BYTE;
-      codes[cur_pos] = (mask_c1 << 8) | mask_c2;
+      codes[cur_pos] = (mask_c1 << BYTE) | mask_c2;
       return codes;
     }
 
@@ -76,10 +81,10 @@ uint16_t* convert_to_codes(char* input, int length)
 
     uint16_t mask_c3 = c3 & SMALLEST_BYTE;
     uint16_t lower = c2 & LOWER_NIBBLE;
-    uint16_t upper = (c2 & UPPER_NIBBLE) >> 4;
+    uint16_t upper = (c2 & UPPER_NIBBLE) >> NIBBLE;
 
-    codes[cur_pos] = (mask_c1 << 4) | upper;
-    codes[cur_pos+1] = mask_c3 | (lower << 8);
+    codes[cur_pos] = (mask_c1 << NIBBLE) | upper;
+    codes[cur_pos+1] = mask_c3 | (lower << BYTE);
     cur_pos += 2;
   }
 
