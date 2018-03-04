@@ -7,9 +7,9 @@ typedef unsigned short int uint16_t;
 
 using namespace std;
 
-int* convert_to_codes(char* input, int length);
+uint16_t* convert_to_codes(char* input, int length);
 
 
-string& decompress(int* codes, int num_codes);
+string& decompress(uint16_t* codes, int num_codes);
 
 #endif

@@ -9,8 +9,10 @@ using namespace std;
 class Dictionary {
 
 private:
-  map<string, int>* dict;
-  int curr_index;
+  string** dict;
+  int next_index;
+
+  void free_strings(void);
 
 public:
   Dictionary();
@@ -18,8 +20,7 @@ public:
   //Dictionary(const &Dictionary);
   //Dictionary& operator=(const &Dictionary);
   void init_ascii_chars(void);
-  bool contains(string str);
-  int get(string str);
+  string* get(int index);
   void put(string str);
 
 };

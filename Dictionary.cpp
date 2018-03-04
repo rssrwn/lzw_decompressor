@@ -7,13 +7,14 @@ using namespace std;
 
 Dictionary::Dictionary()
 {
-  dict = new map<string, int>;
-  curr_index = 0;
+  dict = new string*[MAX_DICT_SIZE];
+  next_index = 0;
 }
 
 Dictionary::~Dictionary()
 {
-  delete dict;
+  free_strings();
+  delete[] dict;
 }
 
 void Dictionary::init_ascii_chars(void)
@@ -21,38 +22,34 @@ void Dictionary::init_ascii_chars(void)
   for (int i=0; i<=MAX_CHARS; i++)
   {
     string str(1, (char) i);
-    dict->insert( pair<string, int>(str, i) );
+    this->put(str);
   }
 }
 
-bool Dictionary::contains(string str)
+string* Dictionary::get(int index)
 {
-  if (dict->find(str) == dict->end())
-    return false;
+  if (index >= next_index)
+    return nullptr;
 
-  return true;
-}
-
-int Dictionary::get(string str)
-{
-  map<string, int>::iterator iter = dict->find(str);
-  if (iter == dict->end())
-    return -1;
-
-  return iter->second;
+  return dict[index];
 }
 
 void Dictionary::put(string str)
 {
   // If the dictionary is bigger than 2^12, reset it
-  if (curr_index >= (MAX_DICT_SIZE-1))
+  if (next_index >= MAX_DICT_SIZE)
   {
-    dict->clear();
-    this->init_ascii_chars();
-    curr_index = 0;
+    free_strings();
+    init_ascii_chars();
   }
 
-  pair<string, int> p(str, curr_index);
-  dict->insert(p);
-  curr_index++;
+  string* copy = new string(str);
+  dict[next_index] = copy;
+  next_index++;
+}
+
+void Dictionary::free_strings(void)
+{
+  for (int i=0; i<next_index; i++)
+    delete dict[i];
 }
